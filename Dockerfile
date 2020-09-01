@@ -23,6 +23,7 @@ WORKDIR /app/samvera/hyrax-webapp
 
 COPY --chown=1001:101 ./bin /app/samvera
 ENV PATH="/app/samvera:$PATH"
+ENV RAILS_SERVE_STATIC_FILES="1"
 
 ENTRYPOINT ["hyrax-entrypoint.sh"]
 CMD ["bundle", "exec", "puma", "-v", "-b", "tcp://0.0.0.0:3000"]
@@ -35,7 +36,7 @@ ARG BUNDLE_WITHOUT="development test"
 
 ONBUILD COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp
 ONBUILD RUN bundle install --jobs "$(nproc)"
-ONBUILD RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake yarn:install assets:precompile
+ONBUILD RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake assets:precompile
 
 FROM hyrax-base as hyrax-engine-dev
 
@@ -48,4 +49,4 @@ COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp
 COPY --chown=1001:101 . /app/samvera/hyrax-engine
 
 RUN bundle install --jobs "$(nproc)"
-RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake yarn:install assets:precompile
+RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake assets:precompile
