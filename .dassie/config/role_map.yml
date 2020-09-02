@@ -20,4 +20,7 @@ test:
     - leland_himself@example.com
 
 production:
-  # Add roles for users here.
+  archivist:
+    - archivist1@example.com
+  admin:
+    - admin@example.com
