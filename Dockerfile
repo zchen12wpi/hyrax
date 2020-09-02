@@ -8,6 +8,7 @@ RUN apk --no-cache upgrade && \
   apk --no-cache add build-base \
   tzdata \
   nodejs \
+  yarn \
   $DATABASE_APK_PACKAGE \
   $EXTRA_APK_PACKAGES
 
@@ -34,7 +35,7 @@ ARG BUNDLE_WITHOUT="development test"
 
 ONBUILD COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp
 ONBUILD RUN bundle install --jobs "$(nproc)"
-
+ONBUILD RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake yarn:install assets:precompile
 
 FROM hyrax-base as hyrax-engine-dev
 
@@ -47,3 +48,4 @@ COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp
 COPY --chown=1001:101 . /app/samvera/hyrax-engine
 
 RUN bundle install --jobs "$(nproc)"
+RUN DB_ADAPTER=nulldb DATABASE_URL='postgresql://fake' bundle exec rake yarn:install assets:precompile
