@@ -117,10 +117,9 @@ module Hyrax
         next if current_ability.can?(:edit, doc)
         raise WorkflowAuthorizationException if doc.suppressed? && current_ability.can?(:read, doc)
       end
-      rv = Hyrax::PresenterFactory.build_for(ids: ids,
-                                             presenter_class: WorkShowPresenter,
-                                             presenter_args: current_ability).first
-      rv
+      Hyrax::PresenterFactory.build_for(ids: ids,
+                                        presenter_class: WorkShowPresenter,
+                                        presenter_args: current_ability).first
     end
   end
 end
